@@ -1,5 +1,6 @@
 import pymongo
 import csv
+from decimal import Decimal
 
 
 class Artist:
@@ -16,7 +17,7 @@ class Artist:
             for row in reader:
                 artist = get_artist(row)
                 artists.append(artist)
-                self._artists[artist['id']] = get_mini_artist(artist)
+                self._artists[artist['id']] = get_artist(artist)
 
         db['artists'].insert_many(artists)
 
@@ -25,10 +26,16 @@ class Artist:
 
 
 def get_artist(row) -> dict:
+
+    strin2 = str(row['genres']).strip('[]')
+    if strin2 == '':
+        strin3 = []
+    else:
+        strin3 = str(strin2).split(',')
     return {
         'id': row['id'],
-        'followers': row['followers'],
-        'genres': row['genres'].split(','),
+        'followers': conv(row['followers']),
+        'genres': strin3,
         'name': row['name'],
         'popularity': int(row['popularity'])
     }
@@ -39,3 +46,11 @@ def get_mini_artist(artist) -> dict:
         'id': artist['id'],
         'name': artist['name']
     }
+
+
+def conv(s):
+    try:
+        s = float(s)
+    except ValueError:
+        pass
+    return s
