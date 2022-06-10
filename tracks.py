@@ -12,6 +12,7 @@ class TrackParser:
         db = client[db_name]
         tracks = []
         listOfArtists = []
+
         with open(self._file, 'r', encoding='cp850') as csv_file:
             reader = csv.DictReader(csv_file)
             for row in reader:
@@ -21,8 +22,7 @@ class TrackParser:
                     if (row['id_artists'] in artist['id'] for artist in artists):
                         name = eval(row['id_artists'].strip('[]'))
                         try:
-                            listofOneArtist = artists[name].items()
-                            tracks.append(get_track(row,listofOneArtist))
+                            tracks.append(get_track(row,artists[name]))
                         except:
                             print(
                                 "Error artist_id: {} not found in csv (single artists)"
